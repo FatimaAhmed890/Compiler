@@ -3,155 +3,162 @@ using namespace std;
 #include "Utilities.h"
 
 bool isValidDelimiter(char ch) {
-    if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' ||
-        ch == '/' || ch == ',' || ch == ';' || ch == '>' ||
-        ch == '<' || ch == '=' || ch == '(' || ch == ')' ||
-        ch == '[' || ch == ']' || ch == '{' || ch == '}')
-        return (true);
-    return (false);
+  if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' || ch == '/' ||
+      ch == ',' || ch == ';' || ch == '>' || ch == '<' || ch == '=' ||
+      ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '{' ||
+      ch == '}')
+    return (true);
+  return (false);
 }
 
 vector<std::string> wordBreaker(std::string &line) {
-    std::vector<std::string> result;
-    std::string currentWord;
-    int quotes = 0;
-    bool isMultiLineComment = false;
+  std::vector<std::string> result;
+  std::string currentWord;
+  int quotes = 0;
+  bool isMultiLineComment = false;
 
+  // loop the line character by character
+  for (size_t i = 0; i < line.size(); ++i) {
+    char character = line[i];
 
-    // loop the line character by character
-    for (size_t i = 0; i < line.size(); ++i) {
-        char character = line[i];
-
-        //check for multi line comments
-        if (character == '~' && line[i+1] == '*'){
-            isMultiLineComment = true;
-            while(isMultiLineComment) {
-                for (i; i < line.size(); ++i) {
-                    if (line[i] == '*' && line[i + 1] == '~') {
-                        isMultiLineComment = false;
-                        break;
-                    } else
-                        continue;
-                }
-            }
-        }
-        if (character == '~') {
+    // check for multi line comments
+    if (character == '~' && line[i + 1] == '*') {
+      isMultiLineComment = true;
+      while (isMultiLineComment) {
+        for (i; i < line.size(); ++i) {
+          if (line[i] == '*' && line[i + 1] == '~') {
+            isMultiLineComment = false;
+            break;
+          } else
             continue;
-        } else if (character == ' ') {
-            if (!currentWord.empty()) {
-                result.push_back(currentWord);
-                currentWord.clear();
-            }
-        }else if (character == '"') {
-            quotes++;
-            currentWord.push_back(character);
-            bool isStringLiteral = true;
-            while (isStringLiteral) {
-                ++i;
-                if (i >= line.size()) {
-                    break;
-                }
-                character = line[i];
-                currentWord.push_back(character);
-                if (line[i] == '"' && line[i - 1] != '\\') {
-                    quotes++;
-                    if (quotes % 2 == 0) {
-                        isStringLiteral = false;
-                    }
-                }
-            }
-        } else if (isValidDelimiter(character)) {
-            if (!currentWord.empty()) {
-                result.push_back(currentWord);
-                currentWord.clear();
-            }
-            result.push_back(std::string(1, character));
-        } else {
-            currentWord.push_back(character);
         }
+      }
     }
-
-    if (!currentWord.empty()) {
+    if (character == '~') {
+      continue;
+    } else if (character == ' ') {
+      if (!currentWord.empty()) {
         result.push_back(currentWord);
+        currentWord.clear();
+      }
+    } else if (character == '"') {
+      quotes++;
+      currentWord.push_back(character);
+      bool isStringLiteral = true;
+      while (isStringLiteral) {
+        ++i;
+        if (i >= line.size()) {
+          break;
+        }
+        character = line[i];
+        currentWord.push_back(character);
+        if (line[i] == '"' && line[i - 1] != '\\') {
+          quotes++;
+          if (quotes % 2 == 0) {
+            isStringLiteral = false;
+          }
+        }
+      }
+    } else if (isValidDelimiter(character)) {
+      if (!currentWord.empty()) {
+        result.push_back(currentWord);
+        currentWord.clear();
+      }
+      result.push_back(std::string(1, character));
+    } else {
+      currentWord.push_back(character);
     }
+  }
 
-    return result;
+  if (!currentWord.empty()) {
+    result.push_back(currentWord);
+  }
+
+  return result;
 }
 
-Token createToken(const std::string &value, int lineNo) {
-    Token token;
-    
-    token.ClassPart = "None"; // Fill this based on your logic
-    token.ValuePart = value;
-    token.LineNo = lineNo;
-    return token;
+Token createToken(TokenType tokenType, const std::string &value, int lineNo) {
+  Token token;
+
+  token.ClassPart = "None"; // Fill this based on your logic
+  token.ValuePart = value;
+  token.LineNo = lineNo;
+  return token;
 }
 
 std::vector<Token> Lexer(const std::vector<std::string> &inputLines) {
-    std::vector<Token> tokens;
-    int lineNo = 1;
+  std::vector<Token> tokens;
+  int lineNo = 1;
 
-    for (const std::string &line : inputLines) {
-        std::istringstream iss(line);
-        std::string word;
+  for (const std::string &line : inputLines) {
+    std::istringstream iss(line);
+    std::string word;
 
-        while (iss >> word) {
-            TokenType tokenType = TokenType::UNKNOWN;
-            if (isInteger(word)) {
-                tokenType = TokenType::INTEGER;
-            } else if (isFloat(word)) {
-                tokenType = TokenType::FLOAT;
-            } else if (isStringConstant(word)) {
-                tokenType = TokenType::STRING;
-            } else if (isCharacterConstant(word)) {
-                tokenType = TokenType::CHAR;
-            } else if (isKeyword(word)) {
-                tokenType = TokenType::KEYWORD;
-            } else if (isPunctuator(word)) {
-                tokenType = TokenType::PUNCTUATOR;
-            } else if (isPOperator(word)) {
-                tokenType = TokenType::OPERATOR;
-            }
+    while (iss >> word) {
+      TokenType tokenType = TokenType::UNKNOWN;
+      if (isInteger(word)) {
+        tokenType = TokenType::INTEGER;
+      } else if (isFloat(word)) {
+        tokenType = TokenType::FLOAT;
+      } else if (isStringConstant(word)) {
+        tokenType = TokenType::STRING;
+      } else if (isCharacterConstant(word)) {
+        tokenType = TokenType::CHAR;
+      } else if (!isKeyword(word).empty()) {
+        tokenType = TokenType::KEYWORD;
+      } else if (!isPunctuator(word).empty()) {
+        tokenType = TokenType::PUNCTUATOR;
+      } else if (!isPOperator(word).empty()) {
+        tokenType = TokenType::OPERATOR;
+      }
 
-            tokens.push_back(createToken(tokenType, word, lineNo));
-        }
-
-        lineNo++;
+      tokens.push_back(createToken(tokenType, word, lineNo));
     }
 
-    return tokens;
+    lineNo++;
+  }
+
+  return tokens;
 }
 
+int main() {
+  fstream file;
+  string line;
 
-int main()
-{
-    fstream file;
-    string line;
+  file.open("/home/fatima/CLionProjects/MyCompiler/basicSyntax.txt",
+            ios_base::in);
 
-    file.open("/home/fatima/CLionProjects/MyCompiler/basicSyntax.txt",  ios_base::in);
+  if (!file.is_open()) {
+    cerr << "Error opening the file!" << endl;
+    return 1;
+  }
 
-    if (!file.is_open())
-    {
-        cerr << "Error opening the file!" << endl;
-        return 1;
-    }
+  int lineNo = 0;
 
-    int lineNo = 0;
+  vector<string> inputLines;
+  while (getline(file, line)) {
+    inputLines.push_back(line);
+  }
 
-    while(getline(file, line))
-    {
-        lineNo++;
-        vector<string> words = wordBreaker(line);
-        cout << "Words on the line " << lineNo << " are: { ";
-        for (const string &word: words)
-        {
-            cout << word << " , ";
-        }
+  vector<Token> allTokens = Lexer(inputLines);
+
+  lineNo = 0;
+  for (const Token &token : allTokens) {
+    if (token.LineNo != lineNo) {
+      if (lineNo != 0) { // Don't print the closing brace on the first line
         cout << "}" << endl;
+      }
+      cout << "Tokens on the line " << token.LineNo << " are: { ";
+      lineNo = token.LineNo;
     }
+    cout << token.ClassPart << "(" << token.ValuePart << ")"
+         << " , ";
+  }
+  if (!allTokens.empty()) {
+    cout << "}" << endl; // Close the last line's tokens.
+  }
 
-
-    file.close();
-    return 0;
+  file.close();
+  return 0;
 }
 
