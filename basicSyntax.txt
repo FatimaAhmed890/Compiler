@@ -1,0 +1,91 @@
+enum season {
+spring = 0,
+summer = 1,
+autumn = 2,
+winter = 3
+}
+
+class A::B_C_D
+while(((a<<<===!=+=55.67
+a+==76.85bc9.99.99.9abc.7
+string"a++\\a=b=c*\"\\n\\"+=56"b=c
+return '\\\n'+'++'\\n'+'+=+7
+
+int main() {
+    ~* I AM
+    A MTULTILINE
+    COMMENT*~
+    char character = '\0';
+    char musketeer = '\n|p'y';
+    string str = "sdfnfj\nfg\"Helloooo\"dfdfddfv\trefe";
+    season mySeaason;
+    cout << mySeason;
+
+    string myString = "Hello World";
+
+    cout << "myString" << endl;
+
+    int arr[4][2] =
+    {
+        {10, 11},
+        {20, 21},
+        {30, 31},
+        {40, 41}
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            cout << "\t" << arr[i][j];
+        }
+        cout << endl;
+    }
+
+    int marks = 80;
+    if (marks < 80)
+    {
+        cout << "Grade B+" << endl;
+    }
+    else if (marks == 80)
+    {
+        cout << "Grade A" << endl;
+    }
+    else {
+        cout << "Grade A+" << endl;
+    }
+
+    int file_size = 5, counter = 0; ~~ Not good practice
+    float sales = 9.9;              ~~ Good practice
+    cout << file_size;
+    cout << "Hello World" << endl;
+
+    ~~ swapping two variables
+    int a = 2;
+    int b = 4;
+    int temp = a;
+    a = b;
+    b = temp;
+    int x = ++a;
+    int y = b++;
+    cout << "After swapping variables are: " << a << " " << b << endl;
+    cout << "Prefixed increment operator:" << x << endl;
+    cout << "Postfixed increment operator: " << y << endl;
+
+    ~~ operators
+    float result = 2 + 3 + 6 / 4 ;
+    cout << "The result of the mathematical operations is: " << result << endl;
+
+    ~~ brace initialization
+    int brace {45};
+    cout << "New notation of initialization: " << brace << endl;
+
+    ~~ Creating an object
+
+    Person person1;
+    Student person2(2, "Fatima", 21);
+    person1.getter();
+    person2.getter();
+
+    return 0;
+}
